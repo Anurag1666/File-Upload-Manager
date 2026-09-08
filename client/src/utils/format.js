@@ -16,12 +16,12 @@ export function formatDate(iso) {
   return d.toLocaleDateString([], { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
-export function iconFor(mimetype = '', name = '') {
-  if (mimetype.startsWith('image/')) return '◧';
-  if (mimetype.startsWith('video/')) return '▶';
-  if (mimetype.startsWith('audio/')) return '♫';
-  if (mimetype === 'application/pdf') return '▤';
-  if (mimetype.includes('zip') || mimetype.includes('compressed')) return '▦';
-  if (mimetype.startsWith('text/') || name.endsWith('.md') || name.endsWith('.txt')) return '▥';
-  return '▧';
+export function iconFor(type = 'other') {
+  switch (type) {
+    case 'image': return '◧';
+    case 'video': return '▶';
+    case 'audio': return '♫';
+    case 'pdf': return '▤';
+    default: return '▧';
+  }
 }

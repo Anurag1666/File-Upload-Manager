@@ -17,8 +17,9 @@ export async function deleteFile(id) {
   return res.ok;
 }
 
-export function downloadFile(id) {
-  window.location.href = `${API}/files/${id}/download`;
+export function downloadFile(file) {
+  // file.downloadUrl comes straight from the /api/files response (Vercel Blob's download link)
+  window.location.href = file.downloadUrl;
 }
 
 // Uses XHR (not fetch) so we get upload progress events.
