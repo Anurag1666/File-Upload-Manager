@@ -1,0 +1,15 @@
+{
+  "name": "file-upload-manager",
+  "version": "1.0.0",
+  "description": "Full-stack file upload manager with drag-and-drop, search, download and delete",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "multer": "^2.0.1",
+    "cors": "^2.8.5"
+  }
+}
