@@ -1,36 +1,40 @@
-# The Depository — File Upload Manager
+# File Upload Manager
 
-Full-stack file upload manager: drag-and-drop uploads, search, download, and delete — all running on your own machine.
+A full-stack file upload manager with drag-and-drop uploads, search, download, and delete functionality — running locally on your machine.
 
-## Stack
+## Tech Stack
 
-- **Backend:** Node.js + Express + Multer (handles multipart uploads, stores files on disk in `/uploads`, metadata in `data/files.json`)
-- **Frontend:** React (built with Vite), compiled to static files and served by Express
+* **Backend:** Node.js, Express, and Multer
+  Handles multipart file uploads, stores uploaded files on disk in `/uploads`, and stores file metadata in `data/files.json`.
+
+* **Frontend:** React with Vite
+  The production build is compiled into static files and served by Express.
 
 ## Features
 
-- Drag-and-drop or click-to-browse upload, multiple files at once
-- Live per-file progress bar during upload
-- Search/filter files by name
-- Download any stored file
-- Delete files (removes both the disk file and its metadata)
-- Live stats: total files held, total size
-- Responsive layout (works on mobile)
+* Drag-and-drop or click-to-browse file uploads
+* Multiple file uploads at once
+* Live per-file upload progress
+* Search and filter files by name
+* Download stored files
+* Delete files and their associated metadata
+* Live statistics for total files and storage usage
+* Responsive UI for desktop and mobile
 
-## Project structure
+## Project Structure
 
-```
+```text
 file-upload-manager/
-├── server.js              # Express API (upload / list / download / delete / stats)
-├── package.json            # backend dependencies
+├── server.js              # Express API and server
+├── package.json           # Backend dependencies and scripts
 ├── data/
-│   └── files.json          # metadata store (auto-created)
-├── uploads/                 # uploaded files live here (auto-created)
-├── public/                  # React production build — served as static files
-└── client/                  # React source (Vite)
+│   └── files.json         # File metadata store
+├── uploads/               # Uploaded files
+├── public/                # React production build
+└── client/                # React/Vite source
     ├── index.html
     ├── vite.config.js
-    ├── package.json         # frontend dependencies
+    ├── package.json
     └── src/
         ├── App.jsx
         ├── main.jsx
@@ -46,54 +50,82 @@ file-upload-manager/
             └── format.js
 ```
 
-## Setup (production — one server, one port)
+## Setup
 
-Requires Node.js 18+.
+### Prerequisites
+
+* Node.js 18 or later
+* npm
+
+### Production
+
+Install and build the React frontend:
 
 ```bash
-# 1. Install and build the React frontend
 cd client
 npm install
-npm run build      # outputs into ../public
+npm run build
+```
 
-# 2. Install and run the backend (serves the built frontend + the API)
+Install and start the backend:
+
+```bash
 cd ..
 npm install
 npm start
 ```
 
-Open **http://localhost:4000** — the React app and the API are both served from here.
+Open **http://localhost:4000** in your browser.
 
-## Setup (development — hot reload)
+The Express server serves both the React frontend and the API.
 
-Run backend and frontend separately. The Vite dev server proxies `/api` calls to Express automatically (see `client/vite.config.js`).
+### Development
+
+Run the backend:
 
 ```bash
-# terminal 1 — backend
 npm install
-npm start                 # http://localhost:4000
-
-# terminal 2 — frontend with hot reload
-cd client
-npm install
-npm run dev                # http://localhost:5173
+npm start
 ```
 
-Work on the UI at `http://localhost:5173`; it talks to the same backend. When you're done, run `npm run build` inside `client/` to refresh the `public/` folder Express serves in production.
+In a second terminal, run the frontend:
 
-## API reference
+```bash
+cd client
+npm install
+npm run dev
+```
 
-| Method | Route                     | Description                          |
-|--------|----------------------------|---------------------------------------|
-| POST   | `/api/upload`              | Upload files (field name: `files`, up to 20 at once, 50MB each) |
-| GET    | `/api/files`                | List files (optional `?search=term`) |
-| GET    | `/api/files/:id/download`   | Download a file by id                |
-| DELETE | `/api/files/:id`            | Delete a file by id                  |
-| GET    | `/api/stats`                | File count + total size              |
+The development frontend runs at **http://localhost:5173** and proxies API requests to the Express backend.
 
-## Notes / things you may want to change
+After making frontend changes, run:
 
-- Metadata is stored in a flat JSON file for simplicity — swap in SQLite/Postgres/Mongo if you need concurrent-write safety or scale.
-- There's no authentication — add a login layer before exposing this beyond localhost.
+```bash
+npm run build
+```
+
+inside the `client` directory to update the production build.
+
+## API Reference
+
+| Method | Route                     | Description                                                                     |
+| ------ | ------------------------- | ------------------------------------------------------------------------------- |
+| POST   | `/api/upload`             | Upload files. Supports up to 20 files per request, with a 50 MB limit per file. |
+| GET    | `/api/files`              | List uploaded files. Supports optional `?search=term`.                          |
+| GET    | `/api/files/:id/download` | Download a file by ID.                                                          |
+| DELETE | `/api/files/:id`          | Delete a file by ID.                                                            |
+| GET    | `/api/stats`              | Get total file count and storage size.                                          |
+
+## Limitations & Future Improvements
+
+* File metadata is stored in a JSON file for simplicity. For production-scale or concurrent usage, a database such as SQLite, PostgreSQL, or MongoDB could be used.
+* Authentication is not currently implemented. A login and authorization layer should be added before exposing the application beyond a trusted local environment.
+* The maximum file size is 50 MB and the maximum number of files per upload is 20. These limits can be configured in `server.js`.
+* If the backend port is changed, update the proxy target in `client/vite.config.js`.
+
+## License
+
+This project was created as a full-stack development assignment.
+efore exposing this beyond localhost.
 - Max file size (50MB) and max files per upload (20) are set in `server.js` and easy to adjust.
 - If you change ports, update the proxy target in `client/vite.config.js`.
